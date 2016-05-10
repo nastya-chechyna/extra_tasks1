@@ -84,9 +84,29 @@ def test_javascript_alerts
 
 end
 
-def test_multiple_windows
-  
+def test_JQueryUI_menu
+  @driver.navigate.to 'https://the-internet.herokuapp.com/jqueryui/menu'
+  element=@driver.find_element(:id, 'ui-id-3')
+  @driver.action.move_to(element).perform
+  expected_text=@driver.find_element(:id, 'ui-id-8')
+  assert(expected_text.displayed?)
 end
+
+def test_multiple_window
+  @driver.navigate.to 'https://the-internet.herokuapp.com/windows'
+  first_window = @driver.window_handle
+  @driver.find_element(:link, 'Click Here').click
+  all_windows = @driver.window_handles
+  second_window = all_windows.select { |this_window| this_window != first_window }
+
+  @driver.switch_to.window(first_window)
+  assert(@driver.find_element(:class, 'example').text.include? 'Opening a new window')
+
+  @driver.switch_to.window(second_window)
+  assert(@driver.find_element(:class, 'example').text.include? 'New Window')
+end
+
+
 def teardown
   @driver.quit
 end
