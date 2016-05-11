@@ -18,7 +18,7 @@ def test_hover
   assert(hover_descr.displayed?)
 end
 
-def drag_and_drop
+def test_drag_and_drop
 
   @driver.navigate.to 'https://the-internet.herokuapp.com/'
   @driver.find_element(:css, "a[href='/drag_and_drop']").click
@@ -35,9 +35,9 @@ def test_select_list
   @driver.navigate.to 'https://the-internet.herokuapp.com/'
   @driver.find_element(:css, "a[href='/dropdown']").click
   @driver.find_element(:css, "option[value='1']").click
-
-  option_selected=@driver.find_element(:css, "option[value='1']").text
-  assert(option_selected.include?'Option 1')
+  option = Selenium::WebDriver::Support::Select.new(@driver.find_element(:id, 'dropdown'))
+  option.select_by(:text, 'Option 1')
+  assert(@driver.find_element(id: 'dropdown').text.include? 'Option 1')
 end
 
 def test_iframe
@@ -88,8 +88,11 @@ def test_JQueryUI_menu
   @driver.navigate.to 'https://the-internet.herokuapp.com/jqueryui/menu'
   element=@driver.find_element(:id, 'ui-id-3')
   @driver.action.move_to(element).perform
-  expected_text=@driver.find_element(:id, 'ui-id-8')
-  assert(expected_text.displayed?)
+  sleep(3)
+  @driver.find_element(:id, 'ui-id-8').click
+  menu_item=@driver.find_element(:link, 'Menu')
+
+  assert(menu_item.displayed?)
 end
 
 def test_multiple_window
